@@ -2,15 +2,15 @@ import random
 import unittest
 
 
-def find_maximum(array):
+def find_maximum_helper(array):
 	if array and len(array) == 1:
 		return array[0], 1
 
 	division = int(len(array) / 2)
 	l_array = array[:division]
 	r_array = array[division:]
-	elem_l, times_l = find_maximum(l_array)
-	elem_r, times_r = find_maximum(r_array)
+	elem_l, times_l = find_maximum_helper(l_array)
+	elem_r, times_r = find_maximum_helper(r_array)
 
 	if not elem_l:
 		if not elem_r:
@@ -31,19 +31,50 @@ def find_maximum(array):
 			return elem_r, times_r
 
 
+def find_majority(array):
+	if not array or len(array) <= 2:
+		return None
+
+	elem, times = find_maximum_helper(array)
+	if elem and len([0 for i in array if i == elem]) >= len(array) / 2:
+		return elem
+	else:
+		return None
+
+
 class Test(unittest.TestCase):
 	def setUp(self):
 		super().setUp()
 
-	def test_find_maximum(self):
-		for n in range(1000):
+	def test_find_majority(self):
+		array = [1, 2, 1, 3, 1, 4, 1, 5, 1]
+		elem = find_majority(array)
+		self.assertEqual(1, elem)
+
+		array = [1, 2, 1]
+		elem = find_majority(array)
+		self.assertEqual(1, elem)
+
+		array = [2, 1, 1]
+		elem = find_majority(array)
+		self.assertEqual(1, elem)
+
+		for n in range(10000):
 			n_elem = random.randint(3, 10000)
 			r = random.random()
 			extra = r if r > 0.5 else r + 0.5
-			n_times_winner = int(extra * n_elem)
+			n_times_winner = int(extra * n_elem) + 1
 			array = [1] * n_times_winner
 			array.extend([random.randint(2, 10000) for i in range(n_elem - n_times_winner)])
 			random.shuffle(array)
 
-			elem, times = find_maximum(array)
-			self.assertEqual(elem, 1)
+			elem = find_majority(array)
+			print(array)
+			self.assertEqual(1, elem)
+
+		for n in range(1000):
+			n_elem = random.randint(3, 10000)
+			array = [random.randint(2, 10000) for i in range(n_elem)]
+
+			elem = find_majority(array)
+			self.assertEqual(None, elem)
