@@ -42,6 +42,10 @@ def find_majority(array):
 			swapper = array[pseudo_half - 1]
 			array[pseudo_half - 1] = array[pseudo_half + 1]
 			array[pseudo_half + 1] = swapper
+		elif array[pseudo_half] == array[pseudo_half - 1]:
+			swapper = array[pseudo_half]
+			array[pseudo_half] = array[pseudo_half + 1]
+			array[pseudo_half + 1] = swapper
 
 	elem, times = find_maximum_helper(array)
 	if elem and len([0 for i in array if i == elem]) >= len(array) / 2:
@@ -55,6 +59,10 @@ class Test(unittest.TestCase):
 		super().setUp()
 
 	def test_find_majority(self):
+		array = [1, 1, 1, 2, 2]
+		elem = find_majority(array)
+		self.assertEqual(1, elem)
+
 		array = [1, 1, 2, 2, 2]
 		elem = find_majority(array)
 		self.assertEqual(2, elem)
@@ -71,7 +79,7 @@ class Test(unittest.TestCase):
 		elem = find_majority(array)
 		self.assertEqual(1, elem)
 
-		for n in range(10000):
+		for n in range(1000):
 			n_elem = random.randint(3, 10000)
 			r = random.random()
 			extra = r if r > 0.5 else r + 0.5
